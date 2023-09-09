@@ -49,6 +49,18 @@ func (qp *QueryParser[T]) Fn(key string, fn QueryParserParamFn[T, string]) *Quer
 	fn(v, qp.Data)
 	return qp
 }
+func (qp *QueryParser[T]) FnIfAny(key string, fn QueryParserParamFn[T, string]) *QueryParser[T] {
+	if qp.HasError() {
+		return qp
+	}
+	qp.RegisterParam(key, "fnIfAny")
+	v := qp.Query.Get(key)
+	if len(v) == 0 {
+		return qp
+	}
+	fn(v, qp.Data)
+	return qp
+}
 func (qp *QueryParser[T]) CustomErrorFn(fn QueryParserCustomErrorFn[T]) *QueryParser[T] {
 	if qp.HasError() {
 		return qp
